@@ -1,5 +1,5 @@
 // dom.js
-import { CALCULATOR_ACTIONS } from "./calculation.js";
+import { saveAction, saveValue } from "./storage.js";
 
 function getElements() {
   return {
@@ -12,8 +12,6 @@ function getElements() {
 // Set up event listeners for all buttons
 export function initializeEventListeners() {
   const { buttons } = getElements();
-  const values = [];
-  const actions = [];
   let currentValue = "";
   
   buttons.forEach(button => {
@@ -24,23 +22,13 @@ export function initializeEventListeners() {
         currentValue += clickedButton.dataset.value;
         console.log('Input value:', currentValue);
       } else if (clickedButton.dataset.action) {
-        const actionKey = clickedButton.dataset.action;
-      
-        actions.push(CALCULATOR_ACTIONS[actionKey]);
+        saveAction(clickedButton);
         
         if (currentValue !== "") {
-          values.push(currentValue);
+          saveValue(currentValue);  
           currentValue = "";
-        }
-
-        console.log('Action clicked:', actions);
-        console.log('Values:', values);
+        } 
       }
     });
   });
 }
-
-// Call only if in a browser environment
-if (typeof window !== 'undefined') {
-    initializeEventListeners();
-  }
