@@ -48,8 +48,4 @@ function triggerCalcEvent() {
     }
   });
   document.dispatchEvent(calcEvent);
-
-  console.log('calcEvent:', calcEvent);
-  console.log('savedActions:', savedActions);
-  console.log('savedValues:', savedValues);
 }

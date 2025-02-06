@@ -1,4 +1,12 @@
 // calc.js
+document.addEventListener('calc', (event) => {
+  const savedActions = event.detail.savedActions;
+ 
+  const stringValues = event.detail.savedValues;
+  const numberValues = stringValues.map(Number);
+
+});
+
 
 export const CALCULATOR_ACTIONS = {
   'add': {
