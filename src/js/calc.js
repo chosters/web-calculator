@@ -1,3 +1,5 @@
+// calc.js
+
 export const CALCULATOR_ACTIONS = {
   'add': {
       displaySymbol: '+',
