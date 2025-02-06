@@ -1,3 +1,6 @@
+// dom.js
+import { CALCULATOR_ACTIONS } from "./calculation.js";
+
 function getElements() {
   return {
     displayExpression: document.querySelector('.display.expression'),
@@ -11,17 +14,27 @@ export function initializeEventListeners() {
   const { buttons } = getElements();
   const values = [];
   const actions = [];
+  let currentValue = "";
   
   buttons.forEach(button => {
     button.addEventListener('click', (event) => {        
       const clickedButton = event.target; 
       
       if (clickedButton.dataset.value) {
-        values.push(clickedButton.dataset.value);
-        console.log('Number clicked:', values);
+        currentValue += clickedButton.dataset.value;
+        console.log('Input value:', currentValue);
       } else if (clickedButton.dataset.action) {
-        actions.push(clickedButton.dataset.action);
+        const actionKey = clickedButton.dataset.action;
+      
+        actions.push(CALCULATOR_ACTIONS[actionKey]);
+        
+        if (currentValue !== "") {
+          values.push(currentValue);
+          currentValue = "";
+        }
+
         console.log('Action clicked:', actions);
+        console.log('Values:', values);
       }
     });
   });

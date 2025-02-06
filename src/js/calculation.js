@@ -1,4 +1,4 @@
-const CALCULATOR_ACTIONS = {
+export const CALCULATOR_ACTIONS = {
   'add': {
       displaySymbol: '+',
       calculationSymbol: '+',
