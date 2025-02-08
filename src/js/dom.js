@@ -9,32 +9,57 @@ function getElements() {
   }
 }
 
+const { displayPrimary } = getElements();
+displayPrimary.textContent = "0";
+
 // Attach event listeners to all buttons and save actions and values
 export function attachEventListeners() {
   const { buttons } = getElements();
   let currentValue = "";
+  let currentAction = "";
   
   buttons.forEach(button => {
     button.addEventListener('click', (event) => {        
       const clickedButton = event.target; 
+      const clickedButtonValue = clickedButton.dataset.value;
+      const clickedButtonAction = clickedButton.dataset.action;
       
-      if (clickedButton.dataset.value) {
-        currentValue += clickedButton.dataset.value;
+      if (clickedButtonValue) {
+        currentValue += clickedButtonValue;
+        if (currentAction !== "") {
+          saveAction(currentAction);
+          currentAction = "";
+        }
       } 
       
-      if (clickedButton.dataset.action) {
-        currentValue = handleAction(clickedButton, currentValue);
-      } 
+      if (clickedButtonAction && clickedButtonAction !== "equal") {
+        currentAction = clickedButtonAction;
+        if (currentValue !== "") {
+          saveValue(currentValue);
+          currentValue = "";
+        }
+        if (getSavedValues().length === 0 && getSavedActions().length === 0) {
+          saveValue("0");
+          currentValue = "";
+        } 
+      }
+
+      if (clickedButtonAction === "equal") {
+        if (getSavedValues().length === 0 && getSavedActions().length === 0) return;
+        else {
+          saveValue(currentValue);
+          triggerCalcEvent();
+          currentValue = "";
+          currentAction = "";
+        }
+      }
+
+      console.log('current value: ', currentValue); 
+      console.log('current action: ', currentAction);
+      console.log('saved values: ', getSavedValues());
+      console.log('saved actions: ', getSavedActions());
     });
   });
-}
-
-// Helper functions
-function handleAction(clickedButton, currentValue) {
-  const actionKey = saveAction(clickedButton);
-  if (currentValue !== "") saveValue(currentValue);  
-  if (actionKey === "equal") triggerCalcEvent();
-  return "";
 }
 
 function triggerCalcEvent() {
@@ -43,9 +68,25 @@ function triggerCalcEvent() {
 
   const calcEvent = new CustomEvent('calc', {
     detail: {
-      savedActions,
-      savedValues,
+      savedActions: savedActions,
+      savedValues: savedValues
     }
   });
   document.dispatchEvent(calcEvent);
+}
+
+
+// Helper functions
+function handleAction(clickedButton, currentAction) {
+  if (currentAction !== "") {
+    saveAction(clickedButton);
+    return "";
+  } else return currentAction;
+}
+
+function handleValue(currentValue) {
+  if (currentValue !== "") {
+    saveValue(currentValue);
+    return "";
+  } else return ""; 
 }

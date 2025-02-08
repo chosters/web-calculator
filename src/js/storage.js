@@ -5,10 +5,9 @@ export const actions = [];
 export const values = [];
 
 // Save functions for actions and values
-export function saveAction(clickedButton) {
-  const actionKey = clickedButton.dataset.action;
-  actions.push(CALCULATOR_ACTIONS[actionKey]); 
-  return actionKey;
+export function saveAction(currentAction) {
+  actions.push(CALCULATOR_ACTIONS[currentAction]); 
+  return currentAction;
 }
 
 export function saveValue(currentValue) {

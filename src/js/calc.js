@@ -1,10 +1,19 @@
 // calc.js
 document.addEventListener('calc', (event) => {
   const savedActions = event.detail.savedActions;
- 
-  const stringValues = event.detail.savedValues;
-  const numberValues = stringValues.map(Number);
+  const calculationSymbols = savedActions.map(action => action.calculationSymbol);
+  const savedValues = event.detail.savedValues;
+  
+  let expressionArray = [];
+  expressionArray.push(savedValues[0]);
 
+  for (let i = 0; i < calculationSymbols.length; i++) {
+    expressionArray.push(calculationSymbols[i]);
+    expressionArray.push(savedValues[i + 1]);
+    if (calculationSymbols[i] === '=') break;
+  }
+
+  console.log('expressionArray: ', expressionArray);
 });
 
 

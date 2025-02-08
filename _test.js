@@ -1,43 +1,30 @@
-import { CALCULATOR_ACTIONS } from "./src/js/calculation";
+    
+//     currentAction = clickedButton.dataset.action;
+//     const 
+//   if (actionKey === "equal") triggerCalcEvent();
+//   return "";
+//   }
 
-function getElements() {
-  return {
-    displayExpression: document.querySelector('.display.expression'),
-    displayPrimary: document.querySelector('.display.primary'),
-    buttons: document.querySelectorAll('.button'),
-  }
-}
-
-// Set up event listeners for all buttons
-export function initializeEventListeners() {
-  const { buttons } = getElements();
-  const values = [];
-  const actions = [];
-  let currentValue = "";
   
-  buttons.forEach(button => {
-    button.addEventListener('click', (event) => {        
-      const clickedButton = event.target; 
-      
-      if (clickedButton.dataset.value) {
-        currentValue += clickedButton.dataset.value;
-        console.log('Input value:', currentValue);
-      } else if (clickedButton.dataset.action) {
-        const action = clickedButton.dataset.action;
-        console.log(CALCULATOR_ACTIONS[action].calculationSymbol);
+//   if (currentValue !== "") saveValue(currentValue);  
+//   else {
 
-        
-        actions.push(clickedButton.dataset.action);
-        values.push(currentValue);
-        currentValue = "";
-        console.log('Action clicked:', actions);
-        console.log('Values:', values);
-      }
-    });
-  });
-}
+//   }
+//   const actionKey = saveAction(clickedButton);
+//   else 
 
-// Call only if in a browser environment
-if (typeof window !== 'undefined') {
-    initializeEventListeners();
-  }
+//   if (actionKey === "equal") triggerCalcEvent();
+//   // return "";
+
+
+// function triggerCalcEvent() {
+//   const savedActions = getSavedActions();
+//   const savedValues = getSavedValues();
+
+//   const calcEvent = new CustomEvent('calc', {
+//     detail: {
+//       savedActions,
+//       savedValues,
+//     }
+//   });
+//   document.dispatchEvent(calcEvent);
