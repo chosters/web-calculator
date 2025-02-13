@@ -24,7 +24,7 @@ export const CALCULATOR_ACTIONS = {
       calculationSymbol: '/',
       type: 'operator',
       priority: 2,
-      validate: function(leftValue, rightValue) {
+      validate: function(_, rightValue) {
         return Number(rightValue) !== 0;
       }
   },
