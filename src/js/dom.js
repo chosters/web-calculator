@@ -24,56 +24,56 @@ export function attachEventListeners() {
       const clickedButtonValue = clickedButton.dataset.value;
       const clickedButtonAction = clickedButton.dataset.action;
       
-      if (clickedButtonValue) {
-        currentValue += clickedButtonValue;
-        if (currentAction !== "") {
-          saveAction(currentAction);
-          currentAction = "";
-        }
-      } 
+      // if (clickedButtonValue) {
+      //   currentValue += clickedButtonValue;
+      //   if (currentAction !== "") {
+      //     saveAction(currentAction);
+      //     currentAction = "";
+      //   }
+      // } 
       
-      if (clickedButtonAction && clickedButtonAction !== "equal") {
-        currentAction = clickedButtonAction;
-        if (currentValue !== "") {
-          saveValue(currentValue);
-          currentValue = "";
-        }
-        if (getSavedValues().length === 0 && getSavedActions().length === 0) {
-          saveValue("0");
-          currentValue = "";
-        } 
-      }
+      // if (clickedButtonAction && clickedButtonAction !== "equal") {
+      //   currentAction = clickedButtonAction;
+      //   if (currentValue !== "") {
+      //     saveValue(currentValue);
+      //     currentValue = "";
+      //   }
+      //   if (getSavedValues().length === 0 && getSavedActions().length === 0) {
+      //     saveValue("0");
+      //     currentValue = "";
+      //   } 
+      // }
 
-      if (clickedButtonAction === "equal") {
-        if (getSavedValues().length === 0 && getSavedActions().length === 0) return;
-        else {
-          saveValue(currentValue);
-          triggerCalcEvent();
-          currentValue = "";
-          currentAction = "";
-        }
-      }
+      // if (clickedButtonAction === "equal") {
+      //   if (getSavedValues().length === 0 && getSavedActions().length === 0) return;
+      //   else {
+      //     saveValue(currentValue);
+      //     triggerCalcEvent();
+      //     currentValue = "";
+      //     currentAction = "";
+      //   }
+      // }
 
-      console.log('current value: ', currentValue); 
-      console.log('current action: ', currentAction);
-      console.log('saved values: ', getSavedValues());
-      console.log('saved actions: ', getSavedActions());
+      // console.log('current value: ', currentValue); 
+      // console.log('current action: ', currentAction);
+      // console.log('saved values: ', getSavedValues());
+      // console.log('saved actions: ', getSavedActions());
     });
   });
 }
 
-function triggerCalcEvent() {
-  const savedActions = getSavedActions();
-  const savedValues = getSavedValues();
+// function triggerCalcEvent() {
+//   const savedActions = getSavedActions();
+//   const savedValues = getSavedValues();
 
-  const calcEvent = new CustomEvent('calc', {
-    detail: {
-      savedActions: savedActions,
-      savedValues: savedValues
-    }
-  });
-  document.dispatchEvent(calcEvent);
-}
+//   const calcEvent = new CustomEvent('calc', {
+//     detail: {
+//       savedActions: savedActions,
+//       savedValues: savedValues
+//     }
+//   });
+//   document.dispatchEvent(calcEvent);
+// }
 
 
 // Helper functions
