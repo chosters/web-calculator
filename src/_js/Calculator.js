@@ -7,6 +7,8 @@ export class Calculator {
     this.savedActions = [];
     this.currentValue = "";
     this.currentAction = "";
+    this.result = "";
+    this.expressionBeforeCalculation = "";
   }
 
   // Handle when a number button is pressed
@@ -20,12 +22,14 @@ export class Calculator {
   }
 
   addAction(clickedButtonAction) {
+    this.result = ""; // Reset result when adding an action
+
     // Handle equals button separately
     if (clickedButtonAction === 'equals') {
       if (this.savedValues.length === 0 && this.savedActions.length === 0) return;
       else {
         this.saveCurrentValue();
-        this.calculate(); // To be implemented later
+        this.calculate();
         this.currentValue = "";
         this.currentAction = "";
         // Excludes 'return;' to allow continuous calculation
@@ -58,20 +62,24 @@ export class Calculator {
         break;
       case 'command':
         if (clickedButtonAction === 'clear') {
-          // AC (All Clear) - when no current inputs and AC symbol i
-          if (this.currentValue === "" && this.savedValues.length === 0) {
+          // AC (All Clear) - when current inputs are empty and result is not empty
+          if ((this.currentValue === "" && this.currentAction === "") ||
+            this.result !== "") {
             this.clearAll();
             return;
           }
-
-          // Check if we're in a state that shows alternate symbol (⌫)
-          if (this.currentValue !== "" || this.savedActions.length > 0) {
+          // Shows alternate delete symbol (⌫)
+          else {
             // If there's a current value, delete each character
             if (this.currentValue !== "") {
               this.currentValue = this.currentValue.slice(0, -1);
               if (this.currentValue === "") {
-                this.currentValue = "0";
+                this.currentValue = "";
               }
+            }
+            // Then delete current action if it exists
+            else if (this.currentAction !== "") {
+              this.currentAction = "";
             }
             // Then delete last saved action if it exists
             else if (this.savedActions.length > 0) {
@@ -81,8 +89,6 @@ export class Calculator {
             else if (this.savedValues.length > 0) {
               this.savedValues.pop();
             }
-          } else {
-            this.clearAll();
           }
         }
         break;
@@ -92,7 +98,6 @@ export class Calculator {
   // Calculation Logic
   calculate() {
     // Step 1: Build initial expression array
-    console.log('Initial state: ', this.getState());
     let expressionArray = [];
     expressionArray.push(this.savedValues[0]);
 
@@ -101,7 +106,12 @@ export class Calculator {
       expressionArray.push(this.savedValues[i + 1]);
     }
 
-    console.log('Expression array: ', expressionArray);
+    // Step 1.5: Set the expression before calculation
+    this.expressionBeforeCalculation = this.savedValues[0];
+    for (let i = 0; i < this.savedActions.length; i++) {
+      this.expressionBeforeCalculation += this.savedActions[i].displaySymbol;
+      this.expressionBeforeCalculation += this.savedValues[i + 1];
+    }
 
     // Step 2: Process priority 2 operations (×, ÷, %)
     let i = 1;  // Start at 1 since first element is always a number
@@ -117,14 +127,14 @@ export class Calculator {
 
         // Handle each priority 2 operation
         switch (expressionArray[i]) {
-          case '×':
+          case '*':
             if (!currentAction.validate(leftValue, rightValue)) {
               return "UNDEFINED";
             }
             result = leftValue * rightValue;
             break;
 
-          case '÷':
+          case '/':
             if (!currentAction.validate(leftValue, rightValue)) {
               return "UNDEFINED";
             }
@@ -189,10 +199,13 @@ export class Calculator {
 
     // Return final result
     this.currentValue = expressionArray[0];
-    console.log('Final result: ', expressionArray[0]);
-    return expressionArray[0];
-  }
+    this.result = expressionArray[0];
 
+    // Update saved values and actions
+    this.savedActions.length = 0;
+    this.savedValues.length = 0;
+    this.savedValues.push(expressionArray[0]);
+  }
 
   // Helper functions
   saveCurrentAction() {
@@ -205,8 +218,15 @@ export class Calculator {
   saveCurrentValue() {
     if (this.currentValue !== "") {
       this.savedValues.push(this.currentValue);
-      this.currentValue = "";
     }
+  }
+
+  clearAll() {
+    this.savedValues = [];
+    this.savedActions = [];
+    this.currentValue = "0";
+    this.currentAction = "";
+    this.result = "";
   }
 
   getState() {
@@ -214,7 +234,10 @@ export class Calculator {
       savedValues: this.savedValues,
       savedActions: this.savedActions,
       currentValue: this.currentValue,
-      currentAction: this.currentAction
+      currentAction: this.currentAction,
+      result: this.result,
+      expressionBeforeCalculation: this.expressionBeforeCalculation,
+      currentActionSymbol: CALCULATOR_ACTIONS[this.currentAction]?.displaySymbol || "",
     };
   }
 } 

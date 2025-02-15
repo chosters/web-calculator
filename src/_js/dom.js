@@ -24,15 +24,50 @@ export function attachEventListeners(calculator) {
           }
 
           // Update display based on calculator state
-          updateDisplay(calculator.getState());
+          updateDisplayAll(calculator.getState());
       });
   });
 }
 
-function updateDisplay(state) {
+function updateDisplayAll(state) { 
+
+  updateDisplayExpression(state);
+  updateDisplayPrimary(state, displayExpressionLogic);
+}
+
+function updateDisplayExpression(state) {
+  const { displayExpression } = getElements();
+  console.log('State: ', state);
+
+  if (state.result) {
+    displayExpression.textContent = state.expressionBeforeCalculation;
+  } else {
+    displayExpression.textContent = "";
+  }
+}
+
+function updateDisplayPrimary(state, displayExpressionLogic) {
   const { displayPrimary } = getElements();
-  // We'll need to determine what to display based on calculator state
-  // For now, just show currentValue if it exists, otherwise last savedValue
-  displayPrimary.textContent = state.currentValue || 
-  (state.savedValues.length > 0 ? state.savedValues[state.savedValues.length - 1] : "0");
+  displayPrimary.textContent = displayExpressionLogic(state);
+}
+
+
+function displayExpressionLogic(state) {
+  let expressionString = "";
+
+  if (state.savedValues.length > 0) {
+    expressionString = state.savedValues[0];
+
+    for (let i = 0; i < state.savedActions.length; i++) {
+      expressionString += state.savedActions[i].displaySymbol;
+      if (state.savedValues[i + 1]) {
+        expressionString += state.savedValues[i + 1];
+      }
+    }
+    expressionString += state.currentActionSymbol;
+    expressionString += state.currentValue;
+  } else {
+    expressionString = state.currentValue;
+  }
+  return expressionString;
 }
