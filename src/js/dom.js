@@ -1,92 +1,73 @@
 // dom.js
-import { saveAction, saveValue, getSavedActions, getSavedValues } from "./storage.js";
-
 function getElements() {
   return {
-    displayExpression: document.querySelector('.display.expression'),
-    displayPrimary: document.querySelector('.display.primary'),
-    buttons: document.querySelectorAll('.button'),
+      displayExpression: document.querySelector('.display.expression'),
+      displayPrimary: document.querySelector('.display.primary'),
+      buttons: document.querySelectorAll('.button'),
   }
 }
 
-const { displayPrimary } = getElements();
-displayPrimary.textContent = "0";
-
-// Attach event listeners to all buttons and save actions and values
-export function attachEventListeners() {
+export function attachEventListeners(calculator) {
   const { buttons } = getElements();
-  let currentValue = "";
-  let currentAction = "";
   
   buttons.forEach(button => {
-    button.addEventListener('click', (event) => {        
-      const clickedButton = event.target; 
-      const clickedButtonValue = clickedButton.dataset.value;
-      const clickedButtonAction = clickedButton.dataset.action;
-      
-      // if (clickedButtonValue) {
-      //   currentValue += clickedButtonValue;
-      //   if (currentAction !== "") {
-      //     saveAction(currentAction);
-      //     currentAction = "";
-      //   }
-      // } 
-      
-      // if (clickedButtonAction && clickedButtonAction !== "equal") {
-      //   currentAction = clickedButtonAction;
-      //   if (currentValue !== "") {
-      //     saveValue(currentValue);
-      //     currentValue = "";
-      //   }
-      //   if (getSavedValues().length === 0 && getSavedActions().length === 0) {
-      //     saveValue("0");
-      //     currentValue = "";
-      //   } 
-      // }
+      button.addEventListener('click', (event) => {
+          const clickedButtonValue = event.target.dataset.value;
+          const clickedButtonAction = event.target.dataset.action;
+          
+          if (clickedButtonValue) {
+              calculator.appendValue(clickedButtonValue);
+          }
+          
+          if (clickedButtonAction) {
+              calculator.addAction(clickedButtonAction);
+          }
 
-      // if (clickedButtonAction === "equal") {
-      //   if (getSavedValues().length === 0 && getSavedActions().length === 0) return;
-      //   else {
-      //     saveValue(currentValue);
-      //     triggerCalcEvent();
-      //     currentValue = "";
-      //     currentAction = "";
-      //   }
-      // }
-
-      // console.log('current value: ', currentValue); 
-      // console.log('current action: ', currentAction);
-      // console.log('saved values: ', getSavedValues());
-      // console.log('saved actions: ', getSavedActions());
-    });
+          // Update display based on calculator state
+          updateDisplayAll(calculator.getState());
+      });
   });
 }
 
-// function triggerCalcEvent() {
-//   const savedActions = getSavedActions();
-//   const savedValues = getSavedValues();
+function updateDisplayAll(state) { 
 
-//   const calcEvent = new CustomEvent('calc', {
-//     detail: {
-//       savedActions: savedActions,
-//       savedValues: savedValues
-//     }
-//   });
-//   document.dispatchEvent(calcEvent);
-// }
-
-
-// Helper functions
-function handleAction(clickedButton, currentAction) {
-  if (currentAction !== "") {
-    saveAction(clickedButton);
-    return "";
-  } else return currentAction;
+  updateDisplayExpression(state);
+  updateDisplayPrimary(state, displayExpressionLogic);
 }
 
-function handleValue(currentValue) {
-  if (currentValue !== "") {
-    saveValue(currentValue);
-    return "";
-  } else return ""; 
+function updateDisplayExpression(state) {
+  const { displayExpression } = getElements();
+  console.log('State: ', state);
+
+  if (state.result) {
+    displayExpression.textContent = state.expressionBeforeCalculation;
+  } else {
+    displayExpression.textContent = "";
+  }
+}
+
+function updateDisplayPrimary(state, displayExpressionLogic) {
+  const { displayPrimary } = getElements();
+  displayPrimary.textContent = displayExpressionLogic(state);
+}
+
+
+function displayExpressionLogic(state) {
+  let expressionString = "";
+
+  if (state.savedValues.length > 0) {
+    expressionString = state.savedValues[0];
+
+    for (let i = 0; i < state.savedActions.length; i++) {
+      expressionString += state.savedActions[i].displaySymbol;
+      if (state.savedValues[i + 1]) {
+        expressionString += state.savedValues[i + 1];
+      }
+    }
+    expressionString += state.currentActionSymbol;
+    expressionString += state.currentValue;
+  } else {
+    expressionString = state.currentValue;
+  }
+  return expressionString;
 }

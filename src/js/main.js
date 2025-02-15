@@ -1,4 +1,8 @@
 // main.js
-import { attachEventListeners} from "./dom.js";
+import { Calculator } from './Calculator.js';
+import { attachEventListeners } from './dom.js';
 
-document.addEventListener('DOMContentLoaded', attachEventListeners());
+document.addEventListener('DOMContentLoaded', () => {
+    const calculator = new Calculator();
+    attachEventListeners(calculator);
+});
